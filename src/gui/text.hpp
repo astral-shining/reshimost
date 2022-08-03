@@ -17,8 +17,7 @@ uniform vec2 u_res;
 
 void main() {
     tex_coord = a_tex_coord;
-    gl_Position = vec4(((a_vert + u_offset + vec2(0.5, -0.5))/u_res.xy*100.f) + u_pos, 0.f, 1.f);
-
+    gl_Position = vec4(((a_vert + u_offset + vec2(0.5, -0.5))/u_res.xy*30.f) + u_pos, 0.f, 1.f);
 }
 )"};
 

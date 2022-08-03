@@ -16,7 +16,11 @@ void Scene1::update() {
         current = ptr;
     }
 
-    text->text = std::string("FPS:") + std::to_string(fps);
+    text->text = std::string("FPS:") + std::to_string(fps) + "\n" +
+        "Pacmans: " + std::to_string(getManager<Pacman>().entities.size()) + "\n\n" + 
+        "   Player Info\n\n" +
+        "Position: " + glm::to_string((glm::vec2)current->transform.position) + "\n" +
+        "Scale: " + glm::to_string((glm::vec2)current->transform.scale); 
     /*
     if (input.getKey(MOUSE_RIGHT)) {
         if (current_scene->objects.size() > 1) {

@@ -18,8 +18,14 @@ void Text::update() {
 void Text::render() {
    // text_shader.use();
 
-    uint32_t i {};
+    float x {};
+    float y {};
     for (uint8_t c : text) {
+        if (c == '\n') {
+            x = 0;
+            y-=1.5;
+            continue;
+        }
         glm::vec2 texture_size = (glm::vec2)current_texture->size;
         current_shader->uniform("u_tex_size", (glm::vec2)char_size/texture_size);
 
@@ -28,8 +34,8 @@ void Text::render() {
         uint32_t py = c/rows*char_size.y;
         current_shader->uniform("u_tex_offset", glm::vec2(glm::vec2(px, py)/texture_size));
         current_shader->uniform("u_pos", pos);
-        current_shader->uniform("u_offset", glm::vec2(i, 0));
+        current_shader->uniform("u_offset", glm::vec2(x, y));
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        i++;
+        x++;
     }
 }

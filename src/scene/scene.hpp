@@ -78,7 +78,7 @@ struct Scene : SceneBase {
 
     template<typename T>
     auto& getManager() {
-        return std::get<T::Manager>(managers);
+        return std::get<typename T::Manager>(managers);
         //return .emplace_back();
     }
 
