@@ -17,6 +17,7 @@ SceneBase::SceneBase() {
 
 void SceneBase::run() {    
     float next_second = 1;
+    static uint32_t fcount {};
     double time_last_frame {};
     while (!glfwWindowShouldClose(window.getGlfwWindowPtr())) {
         delta_time = glfwGetTime()-time_last_frame;
@@ -26,6 +27,7 @@ void SceneBase::run() {
         Shader::forEach([] (Shader* s) {
             s->use();
             s->uniform("u_time", (float) current_time);
+            s->uniform("u_res", (glm::vec2)window.size);
         });
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -38,10 +40,10 @@ void SceneBase::run() {
         glfwPollEvents();
 
         if (double t = glfwGetTime(); t > next_second) {
-            std::cout << "fps: " << fps << std::endl;
+            fps = fcount;
             next_second = t+1;
-            fps = 0;
+            fcount = 0;
         }
-        fps++;
+        fcount++;
     }
 }

@@ -11,10 +11,12 @@ Scene1::Scene1() {
 void Scene1::update() {
     current->move();
     if (input.getKey(MOUSE_LEFT)) {
-        auto ptr = createEntity<Pacman>();
+        auto ptr = create<Pacman>();
         ptr->transform = current->transform;
         current = ptr;
     }
+
+    text->text = std::string("FPS:") + std::to_string(fps);
     /*
     if (input.getKey(MOUSE_RIGHT)) {
         if (current_scene->objects.size() > 1) {

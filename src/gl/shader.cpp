@@ -170,6 +170,10 @@ void Shader::uniform(const char* name, const glm::uvec2& v) {
     glUniform2uiv(uniforms[name].location, 1, glm::value_ptr(v));
 }
 
+void Shader::uniform(const char* name, const glm::vec3& v) {
+    glUniform3fv(uniforms[name].location, 1, glm::value_ptr(v));
+}
+
 uint32_t Shader::getProgram() const {
     return program;
 }

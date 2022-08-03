@@ -16,7 +16,7 @@ struct Pacman : Entity {
     Pacman() {
     }
 
-    using Props = DefineEntity<
+    using Manager = EntityManager<
         Pacman,
         TextureName<"sprites">
     >;

@@ -3,11 +3,11 @@
 #include <util/fixedstring.hpp>
 #include <memory>
 #include <string>
+#include <glm/vec2.hpp>
 
 struct Texture {
     uint32_t id;
-    uint32_t width;
-    uint32_t height;
+    glm::uvec2 size;
 
     Texture();
     Texture(std::string_view image);

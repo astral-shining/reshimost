@@ -12,13 +12,13 @@ void Sprite::use() {
     auto& offset = *(offsets.begin() + current_frame);
 
     current_shader->uniform(
-        "u_tex_offset", 
-        glm::vec2(offset.x/(float)current_texture->width, offset.y/(float)current_texture->height)
+        "u_tex_offset",
+        glm::vec2((glm::vec2)offset/(glm::vec2)current_texture->size)
     );
 
     current_shader->uniform(
-        "u_tex_size", 
-        glm::vec2(size.x/(float)current_texture->width, size.y/(float)current_texture->height)
+        "u_tex_size",
+        glm::vec2((glm::vec2)size/(glm::vec2)current_texture->size)
     );
 
     if (loops) {

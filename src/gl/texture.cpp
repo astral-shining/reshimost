@@ -19,8 +19,7 @@ Texture::Texture(std::string_view str) {
 Texture::Texture(uint32_t texture) : id(texture) {}
 
 Texture& Texture::operator=(Texture& other) {
-    width = other.width;
-    height = other.height;
+    size = other.size;
     id = other.id;
     other.id = 0;
     return *this;
@@ -64,16 +63,16 @@ void Texture::bindImage(std::string_view imagestr) {
     png_init_io(png, fp);
     png_read_info(png, info);
 
-    width = png_get_image_width(png, info);
-    height = png_get_image_height(png, info);
+    size.x = png_get_image_width(png, info);
+    size.y = png_get_image_height(png, info);
     png_byte color_type = png_get_color_type(png, info);
     png_byte bit_depth = png_get_bit_depth(png, info);
     
     uint32_t row_size = png_get_rowbytes(png, info);
-    png_bytep data = (png_bytep) malloc(height * row_size * sizeof(png_byte));
-    png_bytepp row_pointers = (png_bytepp) malloc(height * sizeof(png_bytep));
+    png_bytep data = (png_bytep) malloc(size.y * row_size * sizeof(png_byte));
+    png_bytepp row_pointers = (png_bytepp) malloc(size.y * sizeof(png_bytep));
 
-    for (uint32_t i = 0; i < height; i++) {
+    for (uint32_t i = 0; i < size.y; i++) {
         row_pointers[i] = data + (i * row_size);
     }
 
@@ -102,7 +101,7 @@ void Texture::bindImage(std::string_view imagestr) {
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, alpha, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, alpha, GL_UNSIGNED_BYTE, data);
     //glGenerateMipmap(GL_TEXTURE_2D);
     
     free(data);

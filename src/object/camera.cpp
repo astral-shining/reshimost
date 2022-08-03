@@ -9,7 +9,7 @@ glm::mat4 Camera::getMatrix() {
 }
 
 void Camera::update() {
-    float w = window.width/(200+(zoom*10));
-    float h = window.height/(200+(zoom*10));
+    float w = window.size.x/(200+(zoom*10));
+    float h = window.size.y/(200+(zoom*10));
     projection = glm::ortho(-w, w, -h, h, 0.1f, 1000.0f);
 }

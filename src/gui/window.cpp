@@ -7,7 +7,7 @@
 
 Window window {"haku"};
 
-Window::Window(const std::string_view title, const uint16_t w, const uint16_t h) {
+Window::Window(const std::string_view title, glm::uvec2 size) : title(title), size(size) {
     if (!glfwInit()) {
         terminate("ERROR: glfwInit() in file ", __FILE__);
     }
@@ -16,10 +16,8 @@ Window::Window(const std::string_view title, const uint16_t w, const uint16_t h)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
 
-    width = w;
-    height = h;
 
-    window = glfwCreateWindow(width, height, title.data(), NULL, NULL);
+    window = glfwCreateWindow(size.x, size.y, title.data(), NULL, NULL);
     if (!window) {
         glfwTerminate();
         terminate("ERROR: creating window");
@@ -37,8 +35,7 @@ Window::Window(const std::string_view title, const uint16_t w, const uint16_t h)
 
 void Window::setSize(int w, int h) {
     glfwGetWindowSize(window, &w, &h);
-    width = w;
-    height = h;
+    size = glm::uvec2(w, h);
 }
 
 void Window::setPos(int x, int y) {
@@ -46,8 +43,7 @@ void Window::setPos(int x, int y) {
 }
 
 void Window::onResize(int w, int h) {
-    width = w;
-    height = h;
+    size = glm::uvec2(w, h);
     glViewport(0, 0, w, h); // Update opengl width height
 }
 
@@ -57,7 +53,7 @@ GLFWwindow* Window::getGlfwWindowPtr() const {
 
 void Window::toggleFullScreen() {
     GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-    glfwSetWindowMonitor(window, monitor, 0, 0, width, height, GLFW_DONT_CARE);
+    //glfwSetWindowMonitor(window, monitor, 0, 0, width, height, GLFW_DONT_CARE);
 }
 
 Window::~Window() {

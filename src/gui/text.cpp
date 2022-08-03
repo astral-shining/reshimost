@@ -1,55 +1,35 @@
 #include "text.hpp"
 #include <gl/texture.hpp>
 #include <gl/shader.hpp>
+#include <glad/glad.hpp>
 
-/*static Shader text_shader {
-R"(#version 300 es
-precision mediump float;
-in vec2 a_vert;
-in vec2 a_tex_coord;
-out vec2 tex_coord;
-uniform vec2 pos;
-void main() {
-    tex_coord = a_tex_coord;
-    gl_Position = vec4(a_vert + pos, 0.f, 1.f);
-}
-)",
-R"(#version 300 es
-precision mediump float;
-in vec2 tex_coord;
-out vec4 frag_color;
 
-uniform sampler2D u_tex;
-uniform float u_time;
-uniform vec2 u_tex_size;
-uniform vec2 u_tex_offset;
-
-void main() {
-    frag_color = texture(u_tex, tex_coord * u_tex_size + u_tex_offset);
-    if (frag_color.a < 0.5f) {
-        discard;
-    }
-})"
-};
-*/
-
-Text::Text(Texture* texture, std::string_view text) : texture(texture), text(text) {
-    create();
-}
-
-Text::Text(std::string_view text) : texture(current_texture), text(text) {
-    create();
+Text::Text(std::string_view text, glm::vec2 pos) : text(text), pos(pos) {
 }
 
 void Text::create() {
     //shared_vbo = text_shader.setAttribute({""}, std::initializer_list<T> buffer)
 }
 
+void Text::update() {
+    render();
+}
+
 void Text::render() {
-    texture->use();
    // text_shader.use();
 
+    uint32_t i {};
     for (uint8_t c : text) {
+        glm::vec2 texture_size = (glm::vec2)current_texture->size;
+        current_shader->uniform("u_tex_size", (glm::vec2)char_size/texture_size);
 
+        uint32_t rows = current_texture->size.x/char_size.x;
+        uint32_t px = c%rows*char_size.x;
+        uint32_t py = c/rows*char_size.y;
+        current_shader->uniform("u_tex_offset", glm::vec2(glm::vec2(px, py)/texture_size));
+        current_shader->uniform("u_pos", pos);
+        current_shader->uniform("u_offset", glm::vec2(i, 0));
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        i++;
     }
 }

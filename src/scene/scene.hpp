@@ -10,6 +10,7 @@
 struct SceneBase;
 extern double delta_time;
 extern double current_time;
+extern uint32_t fps;
 extern SceneBase* current_scene;
 
 struct SceneBase {
@@ -32,8 +33,8 @@ struct SceneBase {
 
 template<typename... Ts>
 struct Scene : SceneBase {
-    std::tuple<typename Ts::Props...> entity_props {
-        ((typename Ts::Props*) 0, *this)...
+    std::tuple<typename Ts::Manager...> managers {
+        ((typename Ts::Manager*) 0, *this)...
     };
 
     template<FixedString s, typename T>
@@ -42,7 +43,7 @@ struct Scene : SceneBase {
         T value;
     };
 
-    using Textures = norepeated_tuple_t<std::tuple<FixedString_T<Ts::Props::texture_name, Texture>...>>;
+    using Textures = norepeated_tuple_t<std::tuple<FixedString_T<Ts::Manager::texture_name, Texture>...>>;
     Textures textures;
 
     Scene() {
@@ -66,8 +67,8 @@ struct Scene : SceneBase {
         update();
         constexpr_for(int i=0, i<sizeof...(Ts), i+1, 
             using iT = std::tuple_element_t<i AND std::tuple<Ts...>>;
-            auto& props = std::get<i>(entity_props);
-            props.update();
+            auto& manager = std::get<i>(managers);
+            manager.update();
         );
     }
 
@@ -76,14 +77,16 @@ struct Scene : SceneBase {
     }
 
     template<typename T>
-    std::shared_ptr<T> createEntity() {
-        auto& props = std::get<typename T::Props>(entity_props);
-        auto e = std::make_shared<T>();
-        props.entities.emplace_back(e);
-        e->index = props.entities.size();
-        return e;
+    auto& getManager() {
+        return std::get<T::Manager>(managers);
         //return .emplace_back();
     }
+
+    template<typename T, typename... Args>
+    auto create(Args&&... args) {
+        return std::get<typename T::Manager>(managers).create(std::forward<Args>(args)...);
+    }
+
 };
 
 template<typename T>

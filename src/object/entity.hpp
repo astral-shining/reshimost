@@ -61,39 +61,46 @@ void main() {
 })"
 };
 
+template<typename T, typename tn>
+struct EntityManager {
+    SmartVector<std::shared_ptr<T>, true> entities;
+    static constexpr FixedString texture_name { tn::value };
+    Shader shader { entity_vs, entity_fs };
+    Texture* texture;
+    VAO vao;
+    VBO vbo {
+        shader.setAttribute({"a_vert", "a_tex_coord"}, entity_vertices)
+    };
+
+    EntityManager(auto& s) {
+        pretty(s);
+        texture = &s.template getTexture<texture_name>();
+    }
+
+    void update() {
+        shader.use();
+        vao.use();
+        texture->use();
+        shader.uniform("u_tex_size", glm::vec2(1, 1));
+        // Update entities
+        for (auto& e : entities) {
+            e->update();
+        }
+    }
+
+    template<typename... Ts>
+    auto create(Ts&&... args) {
+        auto e = std::make_shared<T>(std::forward<Ts>(args)...);
+        entities.emplace_back(e);
+        return e;
+    }
+};
+
 struct Entity : GameObject {
     Sprite* sprite;
 
     Entity(void);
     ~Entity();
-
-    template<typename T, typename tn>
-    struct DefineEntity {
-        SmartVector<std::shared_ptr<T>, true> entities;
-        static constexpr FixedString texture_name { tn::value };
-        Shader shader { entity_vs, entity_fs };
-        Texture* texture;
-        VAO vao;
-        VBO vbo {
-            shader.setAttribute({"a_vert", "a_tex_coord"}, entity_vertices)
-        };
-
-        DefineEntity(auto& s) {
-            pretty(s);
-            texture = &s.template getTexture<texture_name>();
-        }
-
-        void update() {
-            shader.use();
-            vao.use();
-            texture->use();
-            shader.uniform("u_tex_size", glm::vec2(1, 1));
-            // Update entities
-            for (auto& e : entities) {
-                e->update();
-            }
-        }
-    };
 
     //using Props = DefineEntity<TextureName<"">>;
 

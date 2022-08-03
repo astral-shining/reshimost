@@ -22,6 +22,5 @@ struct Sprite {
     float timeline {};
 
     Sprite(glm::uvec2 size, Offsets offsets, uint16_t speed = 10, uint16_t loops = -1);
-
     void use();
 };

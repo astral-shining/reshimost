@@ -50,6 +50,7 @@ public:
 
     void uniform(const char*, const int);
     void uniform(const char*, const glm::vec2&);
+    void uniform(const char*, const glm::vec3&);
     void uniform(const char*, const glm::mat4&);
     void uniform(const char*, const glm::uvec2&);
     void uniform(const char*, const float);
