@@ -27,3 +27,9 @@ struct Texture {
 
 extern std::string imagepath;
 extern Texture* current_texture;
+
+template<FixedString s>
+struct TextureEntry {
+    static constexpr FixedString str { s };
+    Texture texture { s };
+};

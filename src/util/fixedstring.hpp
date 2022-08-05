@@ -90,3 +90,9 @@ template<FixedString S>
 consteval auto operator""_fs(){
     return S;
 }
+
+template<FixedString s, typename T>
+struct FixedString_T {
+    static constexpr FixedString str { s };
+    T value;
+};

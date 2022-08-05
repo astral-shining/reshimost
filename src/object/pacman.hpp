@@ -18,7 +18,7 @@ struct Pacman : Entity {
 
     using Manager = EntityManager<
         Pacman,
-        TextureName<"sprites">
+        TextureEntry<"sprites">
     >;
 
     void update() {

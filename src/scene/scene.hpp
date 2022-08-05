@@ -5,7 +5,10 @@
 #include <util/tuple_utils.hpp>
 #include <util/pretty.hpp>
 #include <object/camera.hpp>
-#include <object/entity.hpp>
+#include <util/fixedstring.hpp>
+#include <gl/texture.hpp>
+#include <gl/shader.hpp>
+//#include <object/entity.hpp>
 
 struct SceneBase;
 extern double delta_time;
@@ -33,43 +36,43 @@ struct SceneBase {
 
 template<typename... Ts>
 struct Scene : SceneBase {
-    std::tuple<typename Ts::Manager...> managers {
-        ((typename Ts::Manager*) 0, *this)...
-    };
+    std::tuple<typename Ts::Manager...> managers;
 
-    template<FixedString s, typename T>
-    struct FixedString_T {
-        static constexpr FixedString str { s };
-        T value;
-    };
-
-    using Textures = norepeated_tuple_t<std::tuple<FixedString_T<Ts::Manager::texture_name, Texture>...>>;
+    using Textures = norepeated_tuple_t<std::tuple<typename Ts::Manager::texture_name...>>;
     Textures textures;
 
-    Scene() {
-        constexpr_for(int i=0, i<std::tuple_size_v<Textures>, i+1, 
-            auto& x = std::get<i>(textures); 
-            x.value.bindImage(std::remove_reference_t<decltype(x)>::str);
+    void forEachManager(auto&& fn) {
+        constexpr_for(int i=0, i<sizeof...(Ts), i+1, 
+            fn(std::get<i>(managers));
         );
+    }
+
+    void forEachTexture(auto&& fn) {
+        constexpr_for(int i=0, i<std::tuple_size_v<Textures>, i+1,
+            fn(std::get<i>(textures));
+        );
+    }
+
+    Scene() {
+        forEachManager([&] <typename T> (T& manager) {
+            manager.texture = &std::get<typename T::texture_name>(textures).texture;
+        });
     }
 
     ~Scene() {
     }
 
-
     template<FixedString str>
     Texture& getTexture() {
-        return std::get<FixedString_T<str, Texture>>(textures).value;
+        return std::get<TextureEntry<str>>(textures).texture;
     }
 
     void updateScene() {
         camera.update();
         update();
-        constexpr_for(int i=0, i<sizeof...(Ts), i+1, 
-            using iT = std::tuple_element_t<i AND std::tuple<Ts...>>;
-            auto& manager = std::get<i>(managers);
+        forEachManager([] (auto& manager) {
             manager.update();
-        );
+        });
     }
 
     template<typename T>
@@ -79,7 +82,6 @@ struct Scene : SceneBase {
     template<typename T>
     auto& getManager() {
         return std::get<typename T::Manager>(managers);
-        //return .emplace_back();
     }
 
     template<typename T, typename... Args>
