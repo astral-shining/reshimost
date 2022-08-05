@@ -18,9 +18,9 @@ struct Text {
 
     using Manager = TextManager;
 
-    void create(void);
-    void update(void);
-    void render(void);
+    void create();
+    void update();
+    void render();
 };
 
 struct TextManager {

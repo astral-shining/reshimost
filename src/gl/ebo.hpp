@@ -5,8 +5,8 @@
 struct EBO {
     uint32_t vbo;
     EBO();
-    void bind(void);
-    void unbind(void);
+    void bind();
+    void unbind();
     ~EBO();
 
     void bufferDataStatic(std::initializer_list<uint32_t>);

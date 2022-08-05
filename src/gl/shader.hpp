@@ -33,15 +33,15 @@ public:
     inline static std::unordered_map<void*, std::weak_ptr<VBO>> shared_vbo_table; 
     Shader(const char* vSource_, const char* fSource_);
 
-    static void compileAll(void);
+    static void compileAll();
     static void forEach(auto&& f) {
         for (auto& s : list) {
             f(s);
         }
     }
 
-    void compile(void);
-    void use(void);
+    void compile();
+    void use();
 
     template<bool shared = false, typename T>
     std::conditional_t<shared, std::shared_ptr<VBO>, VBO> setAttribute(std::initializer_list<const char*>, std::initializer_list<T> buffer, uint32_t draw_type = 0x88E4);
@@ -56,9 +56,9 @@ public:
     void uniform(const char*, const float);
 
     const AttribInfo& getAttribInfo(const char*) const;
-    uint32_t getProgram(void) const;
+    uint32_t getProgram() const;
     uint32_t getAttrib(const char*) const;
-    void destroy(void);
+    void destroy();
     ~Shader();
 };
 

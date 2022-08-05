@@ -19,7 +19,7 @@ extern SceneBase* current_scene;
 struct SceneBase {
     Camera camera;
 
-    SceneBase(void);
+    SceneBase();
 
     template<typename T>
     T& cast() {
@@ -27,23 +27,23 @@ struct SceneBase {
     }
 
     //void destroyObject(GameObject& object);
-    virtual void updateScene(void) {}
-    virtual void update(void) {}
+    virtual void updateScene() {}
+    virtual void update() {}
     
-    void run(void);
+    void run();
     virtual ~SceneBase() = default;
 };
 
 template<typename... Ts>
 struct Scene : SceneBase {
-    std::tuple<typename Ts::Manager...> managers;
+    std::tuple<typename Ts::Pool...> pools;
 
-    using Textures = norepeated_tuple_t<std::tuple<typename Ts::Manager::texture_name...>>;
+    using Textures = norepeated_tuple_t<std::tuple<typename Ts::Pool::texture_name...>>;
     Textures textures;
 
-    void forEachManager(auto&& fn) {
+    void forEachPool(auto&& fn) {
         constexpr_for(int i=0, i<sizeof...(Ts), i+1, 
-            fn(std::get<i>(managers));
+            fn(std::get<i>(pool));
         );
     }
 
@@ -54,8 +54,8 @@ struct Scene : SceneBase {
     }
 
     Scene() {
-        forEachManager([&] <typename T> (T& manager) {
-            manager.texture = &std::get<typename T::texture_name>(textures).texture;
+        forEachPool([&] <typename T> (T& pool) {
+            pool.texture = &std::get<typename T::texture_name>(textures).texture;
         });
     }
 

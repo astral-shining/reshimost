@@ -20,10 +20,10 @@ extern std::initializer_list<float> entity_vertices;
 
 
 struct Entity : GameObject {
-    void update(void) {
+    void update() {
         render();
     }
-    void render(void) {
+    void render() {
         glm::mat4 mvp = current_scene->camera.getMatrix() * transform.getMatrix();
         current_shader->uniform("u_MVP", mvp);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -31,7 +31,7 @@ struct Entity : GameObject {
 };
 
 template<typename T, typename Tname>
-struct EntityManager {
+struct EntityPool {
     SmartVector<std::shared_ptr<T>, true> entities;
     using texture_name = Tname;
     Shader shader { entity_vs, entity_fs };
@@ -41,11 +41,10 @@ struct EntityManager {
         shader.setAttribute({"a_vert", "a_tex_coord"}, entity_vertices)
     };
 
-    void update(void) {
+    void update() {
         shader.use();
         vao.use();
         texture->use();
-        shader.uniform("u_tex_size", glm::vec2(1, 1));
         // Update entities
         for (auto& e : entities) {
             e->update();

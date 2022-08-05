@@ -6,9 +6,9 @@ struct VAO {
     VAO();
     VAO(uint32_t id);
 
-    void create(void);
-    void destroy(void);
-    void use(void);
-    void unbind(void);
+    void create();
+    void destroy();
+    void use();
+    void unbind();
     ~VAO();
 };

@@ -16,12 +16,12 @@ struct Texture {
     Texture& operator=(Texture& other);
     Texture& operator=(std::string_view name);
 
-    void create(void);
+    void create();
     void bindImage(std::string_view);
-    void destroy(void);
+    void destroy();
 
-    void use(void);
-    void unbind(void);
+    void use();
+    void unbind();
     ~Texture();
 };
 

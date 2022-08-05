@@ -12,10 +12,10 @@ struct VBO {
     VBO(const VBO &other) = delete;
 	VBO& operator=(const VBO &other) = delete;
 
-    void create(void);
-    void destroy(void);
-    void use(void);
-    void unbind(void);
+    void create();
+    void destroy();
+    void use();
+    void unbind();
     ~VBO();
 
     template<typename T>
