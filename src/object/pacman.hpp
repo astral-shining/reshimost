@@ -13,9 +13,6 @@ struct Pacman : Entity {
         8
     };
 
-    Pacman() {
-    }
-
     using Manager = EntityManager<
         Pacman,
         TextureEntry<"sprites">

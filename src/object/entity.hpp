@@ -31,7 +31,7 @@ struct Entity : GameObject {
 };
 
 template<typename T, typename Tname>
-struct EntityPool {
+struct EntityManager {
     SmartVector<std::shared_ptr<T>, true> entities;
     using texture_name = Tname;
     Shader shader { entity_vs, entity_fs };

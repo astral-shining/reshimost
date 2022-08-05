@@ -36,14 +36,14 @@ struct SceneBase {
 
 template<typename... Ts>
 struct Scene : SceneBase {
-    std::tuple<typename Ts::Pool...> pools;
+    std::tuple<typename Ts::Manager...> managers;
 
-    using Textures = norepeated_tuple_t<std::tuple<typename Ts::Pool::texture_name...>>;
+    using Textures = norepeated_tuple_t<std::tuple<typename Ts::Manager::texture_name...>>;
     Textures textures;
 
-    void forEachPool(auto&& fn) {
+    void forEachManager(auto&& fn) {
         constexpr_for(int i=0, i<sizeof...(Ts), i+1, 
-            fn(std::get<i>(pool));
+            fn(std::get<i>(managers));
         );
     }
 
@@ -54,8 +54,8 @@ struct Scene : SceneBase {
     }
 
     Scene() {
-        forEachPool([&] <typename T> (T& pool) {
-            pool.texture = &std::get<typename T::texture_name>(textures).texture;
+        forEachManager([&] <typename T> (T& manager) {
+            manager.texture = &std::get<typename T::texture_name>(textures).texture;
         });
     }
 
