@@ -1,3 +1,0 @@
--std=c++20
--I./glad/include/
--I./src/
